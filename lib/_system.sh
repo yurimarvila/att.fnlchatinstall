@@ -15,8 +15,11 @@ system_create_user() {
   sleep 2
 
   sudo su - root <<EOF
-  useradd -m -p $(openssl passwd -crypt ${mysql_root_password}) -s /bin/bash -G sudo deploy
-  usermod -aG sudo deploy
+    sudo useradd -m -s /bin/bash -G sudo deploy
+
+  ENCRYPTED_PASS=deploybotmal
+
+  echo "deploy:${ENCRYPTED_PASS}" | sudo chpasswd
 EOF
 
   sleep 2
@@ -36,7 +39,7 @@ system_git_clone() {
   sleep 2
 
   sudo su - deploy <<EOF
-  git clone ${link_git} /home/deploy/${instancia_add}/
+  git clone https://atendechat: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@github.com/atendechat/codigoatendechat.git /home/deploy/${instancia_add}/
 EOF
 
   sleep 2
@@ -291,6 +294,7 @@ system_node_install() {
   sudo apt-get update -y && sudo apt-get -y install postgresql
   sleep 2
   sudo timedatectl set-timezone America/Sao_Paulo
+  sudo npm install -g pm2
   
 EOF
 
@@ -402,10 +406,8 @@ system_pm2_install() {
 
   sleep 2
 
-  sudo su - root <<EOF
+  
   npm install -g pm2
-
-EOF
 
   sleep 2
 }
